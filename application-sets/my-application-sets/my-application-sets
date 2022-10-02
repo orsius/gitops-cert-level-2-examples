@@ -1,19 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: billing-application-set
+  name: multi-cluster-application-set
   namespace: argocd
 spec:
   generators:
-  - list:
-      elements:
-      - namespace: team-a
-      - namespace: team-b
-      - namespace: team-c
-      - namespace: staging
+  - clusters: {} # Automatically use all clusters defined within Argo CD
   template:      
     metadata:
-      name: '{{namespace}}-billing'
+      name: '{{name}}-billing-app'
     spec:
       # The project the application belongs to.
       project: default
@@ -26,8 +21,8 @@ spec:
       
       # Destination cluster and namespace to deploy the application
       destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{namespace}}'
+        server: '{{server}}'
+        namespace: billing
 
       # Sync policy
       syncPolicy:
